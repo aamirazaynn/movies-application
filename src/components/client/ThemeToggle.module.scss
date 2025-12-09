@@ -1,0 +1,13 @@
+.themeToggle {
+  width: fit-content;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--bg-tertiary);
+    transform: rotate(15deg);
+  }
+}
+

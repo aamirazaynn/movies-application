@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import SearchBar from "@/components/client/SearchBar";
 import ThemeToggle from "@/components/client/ThemeToggle";
@@ -13,7 +14,11 @@ export default function Header() {
         </Link>
 
         <div className={styles.actions}>
-          <SearchBar />
+          <Suspense
+            fallback={<div style={{ width: "100%", minWidth: "200px" }} />}
+          >
+            <SearchBar />
+          </Suspense>
           <MobileMenu />
         </div>
 

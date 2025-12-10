@@ -192,4 +192,4 @@ The custom fetch wrapper (`lib/api.ts`) provides:
 
 The application is deployed and live on Vercel:
 
-**🔗 Live Demo**: [https://movies-app-zeta-peach.vercel.app/](https://movies-app-self-zeta.vercel.app/)
+**🔗 Live Demo**: [https://movies-app-zeta-peach.vercel.app/](https://movies-app-zeta-peach.vercel.app/)

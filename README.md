@@ -2,6 +2,8 @@
 
 Welcome to the **Movie App**, a modern web application that allows you to explore movies from the OMDb API database. Search for any movie, view detailed information, add favorites, and enjoy a seamless experience with dark/light mode support.
 
+🌐 **Live Demo**: [https://movies-app-self-zeta.vercel.app/](https://movies-app-self-zeta.vercel.app/)
+
 ## 🚀 Features
 
 - **Search Movies** - Search any movie using the OMDb API with real-time results
@@ -15,6 +17,7 @@ Welcome to the **Movie App**, a modern web application that allows you to explor
 - **Error Handling** - Graceful error handling with loading states and user-friendly messages
 - **TypeScript** - Full type safety throughout the application
 - **SCSS Modules** - Modular and maintainable styling
+- **CI/CD** - Automated deployment pipeline with GitHub and Vercel integration
 
 ## 🛠️ Tech Stack
 
@@ -25,6 +28,8 @@ Welcome to the **Movie App**, a modern web application that allows you to explor
 - **OMDb API** - Movie data source
 - **Bun** - Fast package manager and runtime
 - **ESLint** - Code quality and linting
+- **GitHub** - Version control and repository hosting
+- **Vercel** - Deployment platform with CI/CD integration
 
 ## 📸 Preview
 
@@ -33,10 +38,8 @@ Welcome to the **Movie App**, a modern web application that allows you to explor
 Below are screenshots showcasing the Movie App interface in both light and dark modes, demonstrating responsive layout and theming:
 
 <p align="center">
-  <img src="images_readme/desktop_dark.jpg" alt="Desktop Dark Mode" width="45%"/>
-</p>
-<p align="center">
-  <img src="images_readme/mobile_light.jpg" alt="Mobile Light Mode" width="45%"/>
+  <img src="images_readme/desktop_dark.jpg" alt="Desktop Dark Mode" width="75%"/>
+  <img src="images_readme/mobile_light.jpg" alt="Mobile Light Mode" width="20%"/>
 </p>
 
 ## 📁 Project Structure
@@ -187,9 +190,6 @@ The custom fetch wrapper (`lib/api.ts`) provides:
 
 ## 🚀 Deployment
 
-The application is ready to deploy on Vercel:
+The application is deployed and live on Vercel:
 
-1. Push your code to GitHub
-2. Import the project in Vercel
-3. Add your `NEXT_PUBLIC_OMDB_API_KEY` environment variable
-4. Deploy!
+**🔗 Live Demo**: [https://movies-app-self-zeta.vercel.app/](https://movies-app-self-zeta.vercel.app/)

@@ -10,19 +10,13 @@
   }
 }
 
-.burgerLine {
-  width: 24px;
-  height: 2px;
-  background-color: var(--text-primary);
-  border-radius: 2px;
+.close, .open {
+  color: var(--text-primary);
 }
 
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   height: 100vh;
   background-color: var(--overlay);
   z-index: 99;
@@ -41,7 +35,7 @@
   height: 100vh;
   background-color: var(--bg-secondary);
   border-right: 1px solid var(--border);
-  padding: 5rem 1rem 1rem;
+  padding: 1rem;
   z-index: 100;
   display: flex;
   flex-direction: column;
@@ -60,6 +54,11 @@
       color: var(--text-primary);
       background-color: var(--bg-tertiary);
     }
+  }
+
+  div {
+    display: flex;
+    justify-content: space-between;
   }
 }
 

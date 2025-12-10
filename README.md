@@ -1,26 +1,41 @@
-# Movie Application
+# Movie App
 
-A modern Next.js application for searching and managing your favorite movies. Built with TypeScript, SCSS modules, and Zustand for state management.
+Welcome to the **Movie App**, a modern web application that allows you to explore movies from the OMDb API database. Search for any movie, view detailed information, add favorites, and enjoy a seamless experience with dark/light mode support.
 
 ## 🚀 Features
 
-- **Movie Search**: Search for movies using the OMDb API
-- **Movie Details**: View comprehensive information about each movie
-- **Favorites Management**: Add and remove movies from your favorites list
-- **Dark/Light Mode**: Toggle between themes with persistent storage
-- **Responsive Design**: Fully responsive with mobile-friendly navigation
-- **Server-Side Rendering**: Optimized performance with Next.js SSR
-- **Type Safety**: Full TypeScript support throughout the application
-- **Accessibility**: Built with accessibility best practices
+- **Search Movies** - Search any movie using the OMDb API with real-time results
+- **Movie Details** - Dynamic routing for each movie with comprehensive information (synopsis, genre, director, cast, ratings)
+- **Favorites Management** - Add or remove movies from your favorites list, persisted in localStorage
+- **Dark/Light Mode** - Seamless theme switching with persistent preferences
+- **Responsive Design** - Fully responsive with mobile-friendly burger menu navigation
+- **Server-Side Rendering** - Optimized performance with Next.js SSR and React Server Components
+- **Custom Fetch Wrapper** - Universal API wrapper that works on both server and client
+- **Image Optimization** - Automatic image optimization using Next.js Image component
+- **Error Handling** - Graceful error handling with loading states and user-friendly messages
+- **TypeScript** - Full type safety throughout the application
+- **SCSS Modules** - Modular and maintainable styling
 
 ## 🛠️ Tech Stack
 
-- **Next.js 16**: React framework with App Router
-- **TypeScript**: Type-safe development
-- **SCSS Modules**: Modular and scoped styling
-- **Zustand**: Lightweight state management
-- **OMDb API**: Movie data source
-- **Bun**: Fast package manager and runtime
+- **Next.js 16** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **SCSS Modules** - Component-scoped styling
+- **Zustand** - Lightweight state management
+- **OMDb API** - Movie data source
+- **Bun** - Fast package manager and runtime
+- **ESLint** - Code quality and linting
+
+## 📸 Preview
+
+### Light and Dark Mode Views with Responsive Design
+
+Below are screenshots showcasing the Movie App interface in both light and dark modes, demonstrating responsive layout and theming:
+
+<p align="center">
+  <img src="images_readme/mobile_light.jpg" alt="Mobile Light Mode" width="45%"/>
+  <img src="images_readme/desktop_dark.jpg" alt="Desktop Dark Mode" width="45%"/>
+</p>
 
 ## 📁 Project Structure
 
@@ -32,6 +47,7 @@ src/
 │   ├── movie/[id]/       # Movie details page (Dynamic route)
 │   ├── favorites/         # Favorites page (Client Component)
 │   ├── layout.tsx         # Root layout
+│   ├── not-found.tsx      # 404 page
 │   └── globals.scss      # Global styles
 ├── components/
 │   ├── client/            # Client Components (use client)
@@ -48,65 +64,50 @@ src/
 ├── lib/                   # Utility functions
 │   ├── api.ts            # Custom fetch wrapper & API functions
 │   └── utils.ts          # Helper functions
-├── state/                 # State management
-│   └── store.ts          # Zustand stores (favorites & theme)
+├── states/                # State management
+│   ├── favoritesStore.ts # Favorites Zustand store
+│   ├── themeStore.ts     # Theme Zustand store
+│   └── mobileMenuStore.ts # Mobile menu Zustand store
 └── types/                # TypeScript types
     └── movie.ts          # Movie-related types
 ```
 
-## 🏗️ Architecture Decisions
+## ⚙️ Prerequisites
 
-### Server vs Client Components
+Before getting started, make sure you have:
 
-The application follows Next.js best practices for component architecture:
+1. **Bun** - Install from [bun.sh](https://bun.sh)
 
-- **Server Components** (default): Used for data fetching, static content, and components that don't need interactivity
-  - `Header`, `MovieCard`, `MovieGrid`, `LoadingSpinner`, `ErrorMessage`
-  - All page components (except `favorites` which needs client-side state)
+   ```bash
+   curl -fsSL https://bun.sh/install | bash
+   ```
 
-- **Client Components** (`'use client'`): Used for interactive features and browser APIs
-  - `SearchBar`: Handles user input and navigation
-  - `ThemeToggle`: Manages theme state
-  - `FavoriteButton`: Interacts with Zustand store
-  - `MobileMenu`: Handles mobile navigation state
+2. **OMDb API Key** - Get a free API key from [omdbapi.com](https://www.omdbapi.com/apikey.aspx)
 
-### State Management
-
-- **Zustand**: Used for client-side state (favorites and theme)
-- **localStorage**: Persists favorites and theme preferences
-- **Server State**: Fetched directly in Server Components for optimal performance
-
-## ⚙️ Setup
-
-### Prerequisites
-
-- **Bun**: Install from [bun.sh](https://bun.sh)
-- **OMDb API Key**: Get a free API key from [omdbapi.com](https://www.omdbapi.com/apikey.aspx)
-
-### Installation
+## 🖥️ How to Run Locally
 
 1. **Clone the repository**
+
    ```bash
-   git clone <repository-url>
+   git clone (https://github.com/aamirazaynn/movies-application)
    cd movies-application
    ```
 
 2. **Install dependencies**
+
    ```bash
    bun install
    ```
 
 3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   ```
-   
-   Add your OMDb API key to `.env.local`:
+   Create `.env.local` file and add:
+
    ```
    NEXT_PUBLIC_OMDB_API_KEY=your_api_key_here
    ```
 
 4. **Run the development server**
+
    ```bash
    bun run dev
    ```
@@ -114,54 +115,75 @@ The application follows Next.js best practices for component architecture:
 5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
+## 🏗️ Design Decisions & Challenges
+
+### Server vs Client Components
+
+The application strategically separates Server and Client Components following Next.js best practices:
+
+- **Server Components** (default): Used for data fetching, static content, and SEO optimization. Examples: `Header`, `MovieCard`, `MovieGrid`, all page components.
+- **Client Components**: Used only for interactivity requiring browser APIs. Examples: `SearchBar`, `ThemeToggle`, `FavoriteButton`, `MobileMenu`.
+
+This approach minimizes JavaScript bundle size, improves performance, and leverages Next.js SSR capabilities.
+
+### Mobile Menu Scroll Challenge
+
+**Problem**: The mobile menu caused body scroll issues when opened, creating a poor user experience.
+
+**Solution**: Implemented React's `createPortal` with proper mounting checks:
+
+- Renders menu directly to `document.body` using `createPortal`
+- Uses `mounted` state to prevent hydration mismatches (SSR compatibility)
+- Manages body scroll lock when menu is open/closed
+- Ensures proper cleanup on component unmount
+
+This solution eliminates scroll interference and maintains SSR/hydration compatibility.
+
+### State Management
+
+- **Zustand**: Lightweight state management for favorites and theme
+- **localStorage Persistence**: Zustand's persist middleware handles data persistence
+- **Hydration Safety**: Client components check `mounted` state before accessing browser APIs
+
+### Custom API Wrapper
+
+The custom fetch wrapper (`lib/api.ts`) provides:
+
+- Universal compatibility (server and client environments)
+- Automatic API key injection and validation
+- Comprehensive error handling
+- Next.js caching for optimal performance
+- Full TypeScript type safety
+
+## ✨ Implemented Features
+
+### Core Requirements ✅
+
+1. **Search Movies** - Search functionality with movie poster, title, release year, and rating display
+2. **Movie Details Page** - Dynamic routing with comprehensive movie information
+3. **Favorite Movies** - Add/remove favorites with localStorage persistence
+4. **Responsive Design** - Fully responsive with SCSS modules
+5. **State Management** - Zustand for favorites and theme
+6. **Routing** - Next.js App Router (home, search, movie details, favorites)
+7. **Error Handling** - Loading states, error messages, and graceful degradation
+8. **Performance** - Image optimization, code-splitting, lazy loading, API caching
+9. **Accessibility** - Semantic HTML, ARIA labels, keyboard navigation
+10. **Code Quality** - TypeScript, ESLint, clean code structure
+11. **Dev Tools** - Bun package manager, ESLint
+
+### Bonus Features ✅
+
+- **Server-Side Rendering (SSR)** - Strategic use of React Server Components
+- **Animations & Transitions** - Smooth theme transitions, menu animations, hover effects
+
 ## 📝 Available Scripts
 
-- `bun run dev`: Start development server
-- `bun run build`: Build for production
-- `bun run start`: Start production server
-- `bun run lint`: Run ESLint
+- `bun run dev` - Start development server
+- `bun run build` - Build for production
+- `bun run start` - Start production server
+- `bun run lint` - Run ESLint
 
-## 🎨 Styling
-
-The application uses SCSS modules for component-scoped styling:
-
-- **Global Styles**: `src/app/globals.scss` - Theme variables and base styles
-- **Component Styles**: Each component has its own `.module.scss` file
-- **Theme Support**: CSS custom properties for light/dark themes
-- **Responsive Design**: Mobile-first approach with breakpoints
-
-## 🔍 Key Features Implementation
-
-### Custom Fetch Wrapper
-
-The `customFetch` function in `src/lib/api.ts`:
-- Works on both server and client
-- Handles API key injection
-- Provides error handling
-- Supports Next.js caching
-
-### Favorites Management
-
-- Uses Zustand for state management
-- Persists to localStorage
-- Accessible from any client component
-- Optimistic UI updates
-
-### Theme Management
-
-- CSS custom properties for theming
-- Zustand store for theme state
-- localStorage persistence
-- Smooth transitions
-
-### Image Optimization
-
-- Next.js Image component for automatic optimization
-- Placeholder handling for missing posters
-- Responsive image sizing
-- Lazy loading support
-
-## 🚢 Deployment
+## 🚀 Deployment
 
 The application is ready to deploy on Vercel:
 
@@ -169,21 +191,3 @@ The application is ready to deploy on Vercel:
 2. Import the project in Vercel
 3. Add your `NEXT_PUBLIC_OMDB_API_KEY` environment variable
 4. Deploy!
-
-## 📚 Code Quality
-
-- **TypeScript**: Full type safety
-- **ESLint**: Code linting with Next.js config
-- **Accessibility**: ARIA labels and semantic HTML
-- **Performance**: Server-side rendering, image optimization, code splitting
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
-## 📄 License
-
-This project is open source and available under the MIT License.

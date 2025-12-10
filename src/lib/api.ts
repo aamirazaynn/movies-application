@@ -2,9 +2,6 @@ import type { MovieSearchResponse, MovieDetails } from "@/types/movie";
 
 const API_BASE_URL = "https://www.omdbapi.com/";
 
-/**
- * Get API key dynamically (reads from env at runtime)
- */
 function getApiKey(): string {
   const key = process.env.NEXT_PUBLIC_OMDB_API_KEY || "";
   return key;
@@ -14,23 +11,16 @@ interface FetchOptions extends RequestInit {
   params?: Record<string, string>;
 }
 
-/**
- * Check if API key is configured
- */
 export function isApiKeyConfigured(): boolean {
   const apiKey = getApiKey();
   const configured = !!apiKey && apiKey.trim() !== "";
   return configured;
 }
 
-/**
- * Custom fetch wrapper that works on both server and client
- */
 async function customFetch<T>(
   endpoint: string,
   options: FetchOptions = {}
 ): Promise<T> {
-  // Check if API key is configured
   if (!isApiKeyConfigured()) {
     throw new Error(
       "OMDb API key is not configured. Please set NEXT_PUBLIC_OMDB_API_KEY in your environment variables."
@@ -39,14 +29,11 @@ async function customFetch<T>(
 
   const { params, ...fetchOptions } = options;
 
-  // Build URL with query parameters
   const url = new URL(API_BASE_URL + endpoint);
 
-  // Add API key (read dynamically)
   const apiKey = getApiKey();
   url.searchParams.set("apikey", apiKey);
 
-  // Add custom params
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       url.searchParams.set(key, value);
@@ -60,12 +47,10 @@ async function customFetch<T>(
         "Content-Type": "application/json",
         ...fetchOptions.headers,
       },
-      // Add cache configuration for Next.js
-      next: { revalidate: 3600 }, // Revalidate every hour
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
-      // Handle specific error cases
       if (response.status === 401) {
         throw new Error(
           "Invalid API key. Please check your NEXT_PUBLIC_OMDB_API_KEY environment variable."
@@ -84,14 +69,10 @@ async function customFetch<T>(
 
     return data as T;
   } catch (error) {
-    // Only log if it's not our custom error message
     throw error;
   }
 }
 
-/**
- * Search movies by title
- */
 export async function searchMovies(
   searchTerm: string,
   page: number = 1
@@ -105,9 +86,50 @@ export async function searchMovies(
   });
 }
 
-/**
- * Get movie details by IMDb ID
- */
+export async function searchAllMovies(
+  searchTerm: string
+): Promise<MovieSearchResponse> {
+  const firstPage = await searchMovies(searchTerm, 1);
+
+  if (firstPage.Error || !firstPage.Search) {
+    return firstPage;
+  }
+
+  const totalResults = parseInt(firstPage.totalResults || "0", 10);
+  const resultsPerPage = 10;
+  const calculatedPages = Math.ceil(totalResults / resultsPerPage);
+  const maxPages = 10;
+  const totalPages = Math.min(calculatedPages, maxPages);
+
+  if (totalPages <= 1) {
+    return firstPage;
+  }
+
+  const pagePromises: Promise<MovieSearchResponse>[] = [];
+  for (let page = 2; page <= totalPages; page++) {
+    pagePromises.push(searchMovies(searchTerm, page));
+  }
+
+  try {
+    const remainingPages = await Promise.all(pagePromises);
+
+    const allMovies = [...firstPage.Search];
+    for (const pageResult of remainingPages) {
+      if (pageResult.Search && !pageResult.Error) {
+        allMovies.push(...pageResult.Search);
+      }
+    }
+
+    return {
+      Search: allMovies,
+      totalResults: firstPage.totalResults,
+      Response: "True",
+    };
+  } catch (error) {
+    return firstPage;
+  }
+}
+
 export async function getMovieDetails(
   imdbID: string
 ): Promise<MovieDetails | { Error: string; Response: string }> {

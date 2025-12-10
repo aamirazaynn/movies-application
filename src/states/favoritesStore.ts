@@ -12,12 +12,6 @@ interface FavoritesState {
   toggleFavorite: (movie: Movie) => void;
 }
 
-interface ThemeState {
-  theme: "light" | "dark";
-  toggleTheme: () => void;
-}
-
-// Favorites store with localStorage persistence
 export const useFavoritesStore = create<FavoritesState>()(
   persist(
     (set, get) => ({
@@ -45,23 +39,6 @@ export const useFavoritesStore = create<FavoritesState>()(
     }),
     {
       name: "movie-favorites-storage",
-      storage: createJSONStorage(() => localStorage),
-    }
-  )
-);
-
-// Theme store with localStorage persistence
-export const useThemeStore = create<ThemeState>()(
-  persist(
-    (set, get) => ({
-      theme: "dark",
-      toggleTheme: () =>
-        set((state) => ({
-          theme: state.theme === "light" ? "dark" : "light",
-        })),
-    }),
-    {
-      name: "theme-storage",
       storage: createJSONStorage(() => localStorage),
     }
   )

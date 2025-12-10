@@ -12,15 +12,12 @@ import {
 } from "@/lib/utils";
 import type { MovieDetails } from "@/types/movie";
 import styles from "./page.module.scss";
+import { Star } from "lucide-react";
 
 interface MoviePageProps {
   params: Promise<{ id: string }>;
 }
 
-/**
- * Movie details page - Server Component
- * Fetches and displays detailed movie information
- */
 export default async function MoviePage({ params }: MoviePageProps) {
   const { id } = await params;
   let movie: MovieDetails | null = null;
@@ -99,14 +96,7 @@ export default async function MoviePage({ params }: MoviePageProps) {
                 )}
                 {movie.imdbRating && (
                   <span className={styles.rating}>
-                    <svg
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
+                    <Star fill="currentColor" />
                     {formatRating(movie.imdbRating)}
                   </span>
                 )}

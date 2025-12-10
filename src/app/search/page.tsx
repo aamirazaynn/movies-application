@@ -3,17 +3,13 @@ import Header from "@/components/server/Header";
 import MovieGrid from "@/components/server/MovieGrid";
 import LoadingSpinner from "@/components/server/LoadingSpinner";
 import ErrorMessage from "@/components/server/ErrorMessage";
-import { searchMovies, isApiKeyConfigured } from "@/lib/api";
+import { searchAllMovies, isApiKeyConfigured } from "@/lib/api";
 import styles from "./page.module.scss";
 
 interface SearchPageProps {
   searchParams: Promise<{ q?: string; page?: string }>;
 }
 
-/**
- * Search results page - Server Component
- * Fetches and displays search results
- */
 async function SearchResults({ searchQuery }: { searchQuery: string }) {
   if (!isApiKeyConfigured()) {
     return (
@@ -22,7 +18,7 @@ async function SearchResults({ searchQuery }: { searchQuery: string }) {
   }
 
   try {
-    const results = await searchMovies(searchQuery, 1);
+    const results = await searchAllMovies(searchQuery);
 
     if (results.Error) {
       return <ErrorMessage message={results.Error} />;

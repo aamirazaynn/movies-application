@@ -1,33 +1,78 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./MobileMenu.module.scss";
 import ThemeToggle from "./ThemeToggle";
+import { Menu, X } from "lucide-react";
+import { useMobileMenuStore } from "@/states/mobileMenuStore";
 
 export default function MobileMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const { isOpen, isClosing, toggleMenu, closeMenu } = useMobileMenuStore();
 
-  const toggleMenu = () => {
-    if (isOpen) {
-      closeMenu();
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (isOpen && !isClosing) {
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = "hidden";
     } else {
-      setIsOpen(true);
+      // Restore body scroll when menu is closed
+      document.body.style.overflow = "";
     }
-  };
 
-  const closeMenu = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsOpen(false);
-      setIsClosing(false);
-    }, 300);
-  };
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen, isClosing]);
 
   const isActive = (path: string) => pathname === path;
+
+  const menuContent =
+    (isOpen || isClosing) && mounted ? (
+      <>
+        <div
+          className={`${styles.overlay} ${isClosing ? styles.closing : ""}`}
+          onClick={closeMenu}
+        />
+        <nav
+          className={`${styles.mobileMenu} ${isClosing ? styles.closing : ""}`}
+        >
+          <div>
+            <ThemeToggle />
+            <button
+              className={styles.burgerButton}
+              onClick={toggleMenu}
+              type="button"
+            >
+              <X className={styles.close} />
+            </button>
+          </div>
+
+          <Link
+            href="/"
+            className={isActive("/") ? styles.active : ""}
+            onClick={closeMenu}
+          >
+            Home
+          </Link>
+          <Link
+            href="/favorites"
+            className={isActive("/favorites") ? styles.active : ""}
+            onClick={closeMenu}
+          >
+            Favorites
+          </Link>
+        </nav>
+      </>
+    ) : null;
 
   return (
     <>
@@ -36,39 +81,9 @@ export default function MobileMenu() {
         onClick={toggleMenu}
         type="button"
       >
-        <span className={styles.burgerLine} />
-        <span className={styles.burgerLine} />
-        <span className={styles.burgerLine} />
+        <Menu className={styles.open} />
       </button>
-      {(isOpen || isClosing) && (
-        <>
-          <div
-            className={`${styles.overlay} ${isClosing ? styles.closing : ""}`}
-            onClick={closeMenu}
-          />
-          <nav
-            className={`${styles.mobileMenu} ${
-              isClosing ? styles.closing : ""
-            }`}
-          >
-            <Link
-              href="/"
-              className={isActive("/") ? styles.active : ""}
-              onClick={closeMenu}
-            >
-              Home
-            </Link>
-            <Link
-              href="/favorites"
-              className={isActive("/favorites") ? styles.active : ""}
-              onClick={closeMenu}
-            >
-              Favorites
-            </Link>
-            <ThemeToggle />
-          </nav>
-        </>
-      )}
+      {mounted && createPortal(menuContent, document.body)}
     </>
   );
 }

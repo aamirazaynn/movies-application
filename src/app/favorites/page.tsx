@@ -4,18 +4,13 @@ import { useEffect, useState } from "react";
 import Header from "@/components/server/Header";
 import MovieGrid from "@/components/server/MovieGrid";
 import LoadingSpinner from "@/components/server/LoadingSpinner";
-import { useFavoritesStore } from "@/state/store";
 import styles from "./page.module.scss";
+import { useFavoritesStore } from "@/states/favoritesStore";
 
-/**
- * Favorites page - Client Component
- * Needs to be client-side to access Zustand store
- */
 export default function FavoritesPage() {
   const { favorites } = useFavoritesStore();
   const [mounted, setMounted] = useState(false);
 
-  // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);

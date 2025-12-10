@@ -9,6 +9,11 @@
 .errorIcon {
   color: #ef4444;
   margin-bottom: 1.5rem;
+
+  svg {
+      width: 5rem;
+      height: 5rem;
+    }
 }
 
 .errorMessage {

@@ -33,8 +33,10 @@ Welcome to the **Movie App**, a modern web application that allows you to explor
 Below are screenshots showcasing the Movie App interface in both light and dark modes, demonstrating responsive layout and theming:
 
 <p align="center">
-  <img src="images_readme/mobile_light.jpg" alt="Mobile Light Mode" width="45%"/>
   <img src="images_readme/desktop_dark.jpg" alt="Desktop Dark Mode" width="45%"/>
+</p>
+<p align="center">
+  <img src="images_readme/mobile_light.jpg" alt="Mobile Light Mode" width="45%"/>
 </p>
 
 ## 📁 Project Structure
